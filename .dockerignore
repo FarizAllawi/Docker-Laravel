@@ -1,27 +1,37 @@
-# VCS and system files
+# --- VCS & IDE ---
 .git
 .gitignore
 .svn
 .hg
 .idea
 .vscode
+.fleet
+.zed
 .DS_Store
 Thumbs.db
 
-# Environment file (sensitive, should be managed via Docker secrets/env vars or separate volume mounts in dev)
+# --- Dependencies (Force fresh install in container) ---
+/vendor
+/node_modules
+.pnpm-store
+
+# --- Logs & Debug ---
+pnpm-debug.log*
+yarn-error.log
+npm-debug.log
+/storage/logs/*
+
+# --- Environment ---
+# Never copy .env into the image; use Docker secrets or ENV vars
 .env
+.env.production
+.env.backup
 
-# Vendor and Node modules (better to install inside the container to ensure compatibility)
-vendor
-node_modules
+# --- Build Assets ---
+/public/build
+/public/hot
 
-# Laravel-specific directories where files are written during development
-storage/framework/cache/*
-storage/framework/sessions/*
-storage/framework/views/*
-storage/logs/*
-
-# Docker-specific files if they are in the root
+# --- Docker Configs ---
 Dockerfile
 docker-compose*.yml
 .dockerignore
