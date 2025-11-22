@@ -39,7 +39,7 @@ if [ ! -f /var/www/html/composer.json ]; then
 
   echo "Moving installation to project root..."
   # Copy all files (including hidden ones) from temp to root
-  su-exec $RUN_AS cp -a /tmp/laravel-temp/. /var/www/html/
+  su-exec $RUN_AS cp -r /tmp/laravel-temp/. /var/www/html/
 
   # Cleanup temp dir
   rm -rf /tmp/laravel-temp
@@ -98,6 +98,11 @@ mkdir -p /var/www/html/bootstrap/cache
 chown -R $RUN_AS:$RUN_AS /var/www/html/storage
 chown -R $RUN_AS:$RUN_AS /var/www/html/bootstrap/cache
 chown $RUN_AS:$RUN_AS /var/www/html/public || true
+
+if [ -f /var/www/html/.env ]; then
+    echo "Fixing .env file permissions..."
+    chown $RUN_AS:$RUN_AS /var/www/html/.env
+fi
 
 # --- CRITICAL CHANGE: Use 777 for Dev Storage ---
 # In Dev, 777 is safer for storage/cache to ensure Host OS (Windows/Mac)

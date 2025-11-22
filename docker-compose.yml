@@ -31,9 +31,6 @@ services:
     depends_on:
       mailpit:
         condition: service_healthy
-      # Ensure these match the service names in your ROOT docker-compose.yml
-      # If pgsql/redis are defined in the root, these depends_on will work
-      # because they share the same network and project context.
       pgsql:
         condition: service_healthy
       redis:
@@ -80,20 +77,6 @@ services:
       retries: 3
       timeout: 5s
       start_period: 10s
-    
-  selenium:
-    image: selenium/standalone-chromium
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    volumes:
-      - '/dev/shm:/dev/shm'
-    networks:
-      - laravel-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
-      interval: 5s
-      timeout: 5s
-      retries: 3
 
   redis:
     image: 'redis:alpine'
