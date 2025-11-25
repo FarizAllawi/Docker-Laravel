@@ -3,7 +3,7 @@
 # ==============================================================================
 ARG ALPINE_VERSION=3.22
 ARG WWWGROUP=1000
-ARG WWWUSER=1000
+ARG WWWUSER=1337
 ARG NODE_VERSION=22
 ARG POSTGRES_VERSION=17
 
