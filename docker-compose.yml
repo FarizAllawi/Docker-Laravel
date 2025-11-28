@@ -17,6 +17,7 @@ services:
       timeout: 5s
       retries: 3
 
+# SERVICES OVERRIDE
   laravel.test:
     build:
       context: ./docker
@@ -28,7 +29,8 @@ services:
     # UNCOMMENT THE FOLLOWING LINES IF YOU WANT TO USE A SEPARATE .env FILE FOR DOCKER
     # BUT NOT FOR THE FIRST TIME EXECUTING `docker compose up`
     # env_file:
-    #   - .env
+    #   - docker/default.env
+    #   - .env # Override default.env
     volumes:
       - '.:/var/www/html'
     extends:
@@ -39,7 +41,8 @@ services:
     # UNCOMMENT THE FOLLOWING LINES IF YOU WANT TO USE A SEPARATE .env FILE FOR DOCKER
     # BUT NOT FOR THE FIRST TIME EXECUTING `docker compose up`
     # env_file:
-    #   - .env
+    #   - docker/default.env
+    #   - .env # Override default.env
     extends:
       file: docker/database/compose.yml
       service: postgres
@@ -48,7 +51,8 @@ services:
     # UNCOMMENT THE FOLLOWING LINES IF YOU WANT TO USE A SEPARATE .env FILE FOR DOCKER
     # BUT NOT FOR THE FIRST TIME EXECUTING `docker compose up`
     # env_file:
-    #   - .env
+    #   - docker/default.env
+    #   - .env # Override default.env
     extends:
       file: docker/database/compose.yml
       service: redis
