@@ -39,7 +39,10 @@ if [ ! -f /var/www/html/composer.json ]; then
 
   echo "Moving installation to project root..."
   # Copy all files (including hidden ones) from temp to root
-  su-exec $RUN_AS cp -r /tmp/laravel-temp/. /var/www/html/
+  su-exec $RUN_AS rsync -av \
+    --exclude='.pnpm-store' \
+    --exclude='.gitignore' \
+    /tmp/laravel-temp/ /var/www/html/
 
   # Cleanup temp dir
   rm -rf /tmp/laravel-temp
