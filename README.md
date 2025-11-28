@@ -9,7 +9,7 @@ Several programs used include:
 - xdebug
 - Laravel Version 12
 - NodeJS: npm, pnpm
-- Postgresql-17
+- Postgresql-18
 
 
 # How to Use
@@ -17,8 +17,9 @@ Several programs used include:
 - Make sure you have installed Docker and Docker Compose on your computer.
 - Download or clone this repository.
 - Open a terminal and navigate to the directory where you saved these files.
+- Update default environtment if neeed located in "docker/default.env"
 - Run the following command to build and start the containers:
-```bash 
+```bash
     docker compose up
 ```
 

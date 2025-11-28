@@ -12,7 +12,7 @@ LARAVEL_DB_USER=${LARAVEL_DB_USER:-$POSTGRES_USER}
 # Since the owner variables fall back to the same $POSTGRES_USER, both databases
 # will be owned by that single user, fulfilling your requirement.
 # DB_NAMES=("db_name_1" "db_name_2") # EDIT THIS IF LINE NEEDED
-DB_NAMES=("laravel_db") # EDIT THIS IF LINE NEEDED
+DB_NAMES=("$DB_DATABASE") # EDIT THIS IF LINE NEEDED
 # DB_OWNERS=("$USER_VARIABLE_1" "$USER_VARIABLE_2")
 DB_OWNERS=("$LARAVEL_DB_USER")
 NUM_DBS=${#DB_NAMES[@]} # Get the total number of databases to process

@@ -76,10 +76,10 @@ if [ -f .env ]; then
     # Use environment variables, falling back to defaults if they are empty.
     # The default DB_PORT is now 5432 for Postgres.
     sed -i "s|^DB_CONNECTION=.*|DB_CONNECTION=${DB_CONNECTION:-pgsql}|" .env
-    sed -i "s|^#* *DB_HOST=.*|DB_HOST=${DB_HOST:-pgsql}|" .env
+    sed -i "s|^#* *DB_HOST=.*|DB_HOST=${DB_HOST:-postgres}|" .env
     sed -i "s|^#* *DB_PORT=.*|DB_PORT=${DB_PORT:-5432}|" .env
-    sed -i "s|^#* *DB_DATABASE=.*|DB_DATABASE=${DB_DATABASE:-laravel_example}|" .env
-    sed -i "s|^#* *DB_USERNAME=.*|DB_USERNAME=${DB_USERNAME:-laravel_example}|" .env
+    sed -i "s|^#* *DB_DATABASE=.*|DB_DATABASE=${DB_DATABASE:-laravel_db}|" .env
+    sed -i "s|^#* *DB_USERNAME=.*|DB_USERNAME=${DB_USERNAME:-postgres}|" .env
     sed -i "s|^#* *DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD:-secret}|" .env
 
     # The default Redis

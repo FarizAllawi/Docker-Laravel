@@ -25,11 +25,30 @@ services:
       args:
         WWWGROUP: '${WWWGROUP:-1000}'
         WWWUSER: '${WWWUSER:-1337}'
+    # UNCOMMENT THE FOLLOWING LINES IF YOU WANT TO USE A SEPARATE .env FILE FOR DOCKER
+    # BUT NOT FOR THE FIRST TIME EXECUTING `docker compose up`
+    # env_file:
+    #   - .env
     volumes:
       - '.:/var/www/html'
     extends:
       file: docker/compose.yml
       service: laravel.test
 
-include:
-  - docker/database/compose.yml # Database service
+  postgres:
+    # UNCOMMENT THE FOLLOWING LINES IF YOU WANT TO USE A SEPARATE .env FILE FOR DOCKER
+    # BUT NOT FOR THE FIRST TIME EXECUTING `docker compose up`
+    # env_file:
+    #   - .env
+    extends:
+      file: docker/database/compose.yml
+      service: postgres
+
+  redis:
+    # UNCOMMENT THE FOLLOWING LINES IF YOU WANT TO USE A SEPARATE .env FILE FOR DOCKER
+    # BUT NOT FOR THE FIRST TIME EXECUTING `docker compose up`
+    # env_file:
+    #   - .env
+    extends:
+      file: docker/database/compose.yml
+      service: redis
