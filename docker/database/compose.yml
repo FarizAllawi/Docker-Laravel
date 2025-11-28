@@ -1,0 +1,62 @@
+networks:
+  backend:
+    driver: bridge
+
+services:
+  # ============================================================
+  # POSTGRES (Production Ready)
+  # ============================================================
+  postgres:
+    image: postgres:18-alpine
+    env_file:
+      - ../../.env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      # POSTGRES_DB has been removed. The database names (screening_db and hrms_db)
+      # are now created by the init_dbs.sh script located in the mounted volume.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+      PGDATA: "/data"
+    ports:
+      - "5432:5432"
+    volumes:
+      -  ../.docker-data/postgres_data:/data
+      - ../.docker-data/wal_archives:/mnt/server/archive # For Replication if needed
+      - ./postgresql/init:/docker-entrypoint-initdb.d # This volume ensures init_dbs.sh runs
+      - ./postgresql/:/config/
+    command: "postgres -c config_file=/config/postgresql.conf"
+    networks:
+      - backend
+    healthcheck:
+      # Healthcheck simplified to check readiness using the user/password,
+      # without specifying a single application database name.
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-admin}"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  # ============================================================
+  # REDIS (Production Ready)
+  # ============================================================
+  redis:
+    image: redis:alpine
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - ../.docker-data/redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - backend
+    restart: unless-stopped

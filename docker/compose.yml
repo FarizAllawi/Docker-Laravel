@@ -1,0 +1,48 @@
+# THIS COMPOSE FILE ONLY CREATE LARAVEL APP
+# MUST BE INCLUDED IN OTHER COMPOSE FILE:
+#  - docker-compose.yml
+#  - docker-compose.prod.yml
+#  - docker-compose.test.yml
+networks:
+  backend:
+    driver: bridge
+
+services:
+  laravel-app:
+    build:
+      context: .
+      dockerfile: php-8.4/Dockerfile
+      target: prod
+      args:
+        WWWGROUP: '${WWWGROUP:-1000}'
+        WWWUSER: '${WWWUSER:-1337}'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '${APP_PORT:-80}:80'
+      - '${APP_VITE_PORT:-5173}:5173'
+    environment:
+      WWWUSER: '${WWWUSER:-1337}'
+      WWWGROUP: '${WWWGROUP:-1000}'
+      LARAVEL_SAIL: 1
+      XDEBUG_MODE: '${XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+      APP_ENV: '${HRMS_APP_ENV:-local}'
+      DB_CONNECTION: '${DB_CONNECTION:-pgsql}'
+      DB_HOST: '${DB_HOST:-postgres}'
+      DB_PORT: '${DB_PORT:-5432}'
+      DB_DATABASE: '${DB_DATABASE:-laravel_db}'
+      DB_USERNAME: '${DB_USERNAME:-postgres}'
+      DB_PASSWORD: '${DB_PASSWORD:-secret}'
+    networks:
+      - backend
+    depends_on:
+      # Ensure these match the service names in root docker/compose.yml
+      # If pgsql/redis are defined in the root, these depends_on will work
+      # because they share the same network and project context.
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
