@@ -8,11 +8,9 @@ services:
   # ============================================================
   postgres:
     image: postgres:18-alpine
-    env_file:
-      - ../../.env
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
       # POSTGRES_DB has been removed. The database names (screening_db and hrms_db)
       # are now created by the init_dbs.sh script located in the mounted volume.
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"

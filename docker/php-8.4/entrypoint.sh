@@ -41,7 +41,9 @@ if [ ! -f /var/www/html/composer.json ]; then
   # Copy all files (including hidden ones) from temp to root
   su-exec $RUN_AS rsync -av \
     --exclude='.pnpm-store' \
+    --exclude='.git' \
     --exclude='.gitignore' \
+    --exclude='README.md' \
     /tmp/laravel-temp/ /var/www/html/
 
   # Cleanup temp dir
@@ -80,8 +82,25 @@ if [ -f .env ]; then
     sed -i "s|^#* *DB_USERNAME=.*|DB_USERNAME=${DB_USERNAME:-laravel_example}|" .env
     sed -i "s|^#* *DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD:-secret}|" .env
 
+    # The default Redis
+    sed -i "s|^REDIS_CLIENT=.*|REDIS_CLIENT=${REDIS_CLIENT:-phpredis}|" .env
+    sed -i "s|^REDIS_HOST=.*|REDIS_HOST=${REDIS_HOST:-redis}|" .env
+    sed -i "s|^REDIS_PASSWORD=.*|REDIS_PASSWORD=${REDIS_PASSWORD:-null}|" .env
+    sed -i "s|^REDIS_PORT=.*|REDIS_PORT=${REDIS_PORT:-6379}|" .env
+
+    # Mailhog / Mailpit settings
+    sed -i "s|^MAIL_MAILER=.*|MAIL_MAILER=${MAIL_MAILER:-smtp}|" .env
+    sed -i "s|^MAIL_HOST=.*|MAIL_HOST=${MAIL_HOST:-mailpit}|" .env
+    sed -i "s|^MAIL_PORT=.*|MAIL_PORT=${MAIL_PORT:-1025}|" .env
+    sed -i "s|^MAIL_USERNAME=.*|MAIL_USERNAME=${MAIL_USERNAME:-null}|" .env
+    sed -i "s|^MAIL_PASSWORD=.*|MAIL_PASSWORD=${MAIL_PASSWORD:-null}|" .env
+    sed -i "s|^MAIL_ENCRYPTION=.*|MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-null}|" .env
+    sed -i "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS:-hello@example.com}|" .env
+
     # Check
     cat .env | grep DB_
+    cat .env | grep REDIS_
+    cat .env | grep MAIL_
 else
     echo ".env file not found, skipping DB configuration replacement."
 fi
@@ -210,11 +229,15 @@ if [ -f "package.json" ]; then
 
     if [ "$APP_ENV" = "local" ]; then
         # 7.A: Development Mode: Start the Vite HMR server in the background
-        echo "Starting Vite development server (via '$PACKAGE_MANAGER run dev') in the background..."
+        # echo "Starting Vite development server (via '$PACKAGE_MANAGER run dev') in the background..."
 
         # We run the command using the determined package manager
         # Run in background (&) so the script can continue to Supervisord.
-        su-exec $RUN_AS $PACKAGE_MANAGER run dev &
+        # su-exec $RUN_AS $PACKAGE_MANAGER run dev &
+
+        # !!! CHANGE HERE !!!
+        # We want to start it manually in the terminal. So the error logs are visible.
+        echo "👉 Open a terminal and run '$PACKAGE_MANAGER run dev' to start the frontend."
 
     elif [ "$APP_ENV" = "production" ]; then
         # 7.B: Production Mode: Ensure assets are built

@@ -17,7 +17,7 @@ services:
       timeout: 5s
       retries: 3
 
-  laravel-app:
+  laravel.test:
     build:
       context: ./docker
       dockerfile: php-8.4/Dockerfile
@@ -25,13 +25,11 @@ services:
       args:
         WWWGROUP: '${WWWGROUP:-1000}'
         WWWUSER: '${WWWUSER:-1337}'
-    env_file:
-      - .env
     volumes:
       - '.:/var/www/html'
     extends:
       file: docker/compose.yml
-      service: laravel-app
+      service: laravel.test
 
 include:
   - docker/database/compose.yml # Database service
